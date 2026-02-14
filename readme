@@ -1,0 +1,1827 @@
+DEFNDER (KaspaOS) is a modular, self-hosted web dashboard that provides an OS-like experience combining productivity apps with Kaspa cryptocurrency functionality. All data is stored locally with encryption.
+## Architecture
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              KaspaOS                                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                      Shell / Framework                           │   │
+│  │   • Authentication    • Theme Engine    • Plugin System       │   │
+│  │   • App Launcher     • Notifications    • Storage Manager       │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐              │
+│  │   Pay    │  │  Vault   │  │  Pass    │  │  Drive   │   ...       │
+│  │  (App)   │  │  (App)   │  │  (App)   │  │  (App)   │              │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘              │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                    Core Services Layer                            │   │
+│  │   • Auth Service    • Storage Service    • Crypto Service       │   │
+│  │   • Notification    • Plugin Manager    • Theme Manager         │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                    Infrastructure Layer                          │   │
+│  │   • Flask Server    • SQLite Database    • Encrypted Storage   │   │
+│  │   • Kaspa Node RPC  • File System        • Cache              │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+## Directory Structure
+```
+kaspa-os/
+├── app.py                      # Main Flask application
+├── config.py                   # Configuration
+├── requirements.txt            # Python dependencies
+│
+├── core/                       # Core framework
+│   ├── __init__.py
+│   ├── auth.py               # Authentication service
+│   ├── storage.py            # Storage manager
+│   ├── plugin.py            # Plugin system
+│   ├── theme.py             # Theme engine
+│   └── notifications.py     # Notification system
+│
+├── apps/                       # Application modules
+│   ├── __init__.py          # App registry
+│   │
+│   ├── pay/                  # Kaspa Payments (priority 1)
+│   │   ├── __init__.py
+│   │   ├── routes.py        # API routes
+│   │   ├── templates/       # HTML templates
+│   │   └── services/       # Business logic
+│   │
+│   ├── vault/                # Encrypted vault (priority 1)
+│   │   ├── __init__.py
+│   │   ├── routes.py
+│   │   └── services/
+│   │
+│   ├── pass/                 # Password manager (priority 2)
+│   ├── drive/               # File manager (priority 3)
+│   ├── mail/                # Email client (priority 4)
+│   └── link/                # Bookmark manager (priority 5)
+│
+├── static/                    # Shared static files
+│   ├── css/
+│   ├── js/
+│   └── icons/
+│
+├── templates/                 # Shared templates
+│   ├── base.html
+│   └── layout.html
+│
+└── data/                     # Data storage
+    ├── db.sqlite
+    └── vault/
+```
+## Plugin System
+### Plugin Structure
+```
+my_plugin/
+├── __init__.py              # Plugin metadata
+├── plugin.json              # Plugin configuration
+├── routes.py               # API routes (optional)
+└── static/                 # Static files (optional)
+```
+### plugin.json Schema
+```json
+{
+  "name": "my_plugin",
+  "version": "1.0.0",
+  "description": "My custom plugin",
+  "apps": ["pay", "vault"],
+  "routes": {
+    "/api/my_plugin": "routes"
+  }
+}
+```
+## Application Modules
+### 1. Pay (Kaspa Payments) - Priority 1
+**Features:**
+- Node monitoring dashboard
+- Send/receive KAS
+- Wallet management (multiple wallets)
+- Smart contract deployment
+- Deadman switch management
+- Transaction history
+### 2. Vault (Encrypted Storage) - Priority 1
+**Features:**
+- Encrypted key storage
+- Mnemonic phrase storage
+- Secret notes
+- Deadman switch management
+**Encryption:** AES-256-GCM with PBKDF2 key derivation
+### 3. Pass (Password Manager) - Priority 2
+**Features:**
+- Password generation
+- Categorized passwords
+- Search
+- Password strength indicator
+### 4. Drive (File Manager) - Priority 3
+**Features:**
+- Upload/download files
+- Folder organization
+- File sharing with links
+### 5. Mail (Email Client) - Priority 4
+**Features:**
+- Multiple account support (IMAP)
+- Inbox, sent, drafts, trash
+- Compose and send
+### 6. Link (Bookmark Manager) - Priority 5
+**Features:**
+- Save bookmarks
+- Tag organization
+- Search
+## Shell / Framework
+### Authentication
+- Passphrase-based authentication
+- PBKDF2 key derivation (100,000 iterations)
+- Session tokens with expiration
+### Theme Engine
+- CSS variables for theming
+- Dark/light mode support
+### Database
+- SQLite for structured data
+- Encrypted storage for secrets
+## Security
+- All sensitive data encrypted at rest (AES-256-GCM)
+- Private keys never stored in plaintext
+- No cloud sync (local only)
+- CORS configuration
+## Migration from Current Dashboard
+1. Create new modular structure
+2. Move `pay` app from existing dashboard
+3. Add `vault` app for key storage
+4. Integrate authentication
+5. Add plugin system
+6. Add remaining apps
+## Roadmap
+### Phase 1: Foundation
+- [x] Basic dashboard exists
+- [x] Deadman switch working
+- [ ] Modular structure
+- [ ] Authentication
+- [ ] Vault app
+### Phase 2: Core Apps
+- [ ] Pay app completion
+- [ ] Pass app
+- [ ] Drive app
+- [ ] Link app
+### Phase 3: Extended
+- [ ] Mail app
+- [ ] Plugin system
+- [ ] Theme engine
+- [ ] Mobile support
+Thinking: Good, the spec was created. Let me summarize for the user.
+Created KaspaOS Specification at /Users/4dsto/.local/share/opencode/plans/kaspaos_spec.md
+Summary
+Architecture:
+- Modular app system with plugin support
+- Each app is isolated in apps/<appname>/
+- Shared core services (auth, storage, encryption)
+- SQLite + encrypted file storage
+Apps (in order of priority):
+| App | Purpose | Priority |
+|-----|---------|----------|
+| Pay | Kaspa payments, node, contracts | 1 |
+| Vault | Encrypted key/secret storage | 1 |
+| Pass | Password manager | 2 |
+| Drive | File manager | 3 |
+| Mail | Email client (IMAP) | 4 |
+| Link | Bookmark manager | 5 |
+Plugin System:
+- Drop-in plugins in plugins/ directory
+- JSON manifest + routes/templates
+- Hooks for app lifecycle events
+Key Features:
+- Local-only (no cloud)
+- AES-256-GCM encryption
+- PBKDF2 key derivation
+- Theme engine
+- Session-based auth
+Next Steps:
+1. Approve this spec?
+2. Questions?
+3. Start implementation?
+▣  Plan · minimax-m2.5-free · 2m 46s
+3. start basics
+Thinking: The user wants me to start implementing the basics of KaspaOS. Let me start with the foundation:
+1. Create the modular directory structure
+2. Set up the Flask app with plugin system
+3. Add authentication
+4. Create the shell/layout
+5. Move existing dashboard to Pay app
+6. Add Vault app
+Let me start building the basics.
+# Todos
+Create KaspaOS directory structure
+Set up Flask app with plugin system
+Create core services (auth, storage, encryption)
+Build shell/layout template
+Create Pay app module
+Create Vault app module
+Add navigation between apps
+Thinking: Let me start creating the directory structure.
+# Create KaspaOS directory structure
+$ mkdir -p /Users/4dsto/kaspa-os/{core,apps/{pay,vault,pass,drive,mail,link},static/{css,js,icons},templates,data}
+Thinking: Now let me create the core files. I'll start with the config and app.py.
+# Wrote kaspa-os/config.py
+"""
+KaspaOS Configuration
+"""
+import os
+class Config:
+    # Server
+    HOST = '0.0.0.0'
+    PORT = 8080
+    DEBUG = False
+    
+    # Security
+    SECRET_KEY = os.environ.get('KASPAOS_SECRET_KEY', 'dev-secret-change-in-production')
+    SESSION_TIMEOUT = 3600  # seconds
+    PASSWORD_ITERATIONS = 100000
+    
+    # Paths
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DATA_DIR = os.path.join(BASE_DIR, 'data')
+    STATIC_DIR = os.path.join(BASE_DIR, 'static')
+    TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+    
+    # Database
+    DB_PATH = os.path.join(DATA_DIR, 'kaspa-os.db')
+    
+    # Kaspa
+    KASPA_RPC_HOST = 'localhost'
+    KASPA_RPC_PORT = 18210
+    KASPA_GRPC_PORT = 16210
+    KASPA_NETWORK = 'testnet-12'
+    
+    # Vault
+    VAULT_DIR = os.path.join(DATA_DIR, 'vault')
+    
+    # Drive
+    DRIVE_DIR = os.path.join(DATA_DIR    
+    # Ensure directories, 'drive')
+ exist
+    @staticmethod
+    def init():
+        for dir_path in [Config.DATA_DIR, Config.VAULT_DIR, Config.DRIVE_DIR]:
+            os.makedirs(dir_path, exist_ok=True)
+class DevelopmentConfig(Config):
+    DEBUG = True
+class ProductionConfig(Config):
+    DEBUG = False
+config = {
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'default': DevelopmentConfig
+}
+Thinking: Let me fix the config file - there was an error with the DRIVE_DIR line. Then continue creating the core files.
+← Edit kaspa-os/config.py
+   # Vault
+   VAULT_DIR = os.path.join(DATA_DIR, 'vault')
+   
+   # Drive
+   DRIVE_DIR = os.path.join(DATA_DIR    
+   # Ensure directories, 'drive')
+exist
+   DRIVE_DIR = os.path.join(DATA_DIR, 'drive')
+   
+   # Ensure directories exist
+   @staticmethod
+   def init():
+       for dir_path in [Config.DATA_DIR, Config.VAULT_DIR, Config.DRIVE_DIR]:
+           os.makedirs(dir_path, exist_ok=True)
+Thinking: Now let me create the core services. Let me create them in parallel to save time.
+# Wrote kaspa-os/core/__init__.py
+"""
+Core module initialization
+"""
+from .auth import AuthService
+from .storage import StorageService
+from .plugin import PluginManager
+from .theme import ThemeService
+__all__ = ['AuthService', 'StorageService', 'PluginManager', 'ThemeService']
+Thinking: Let me create the auth service.
+# Wrote kaspa-os/core/auth.py
+"""
+Authentication Service
+"""
+import hashlib
+import secrets
+import time
+from typing import Optional, Dict
+from dataclasses import dataclass
+@dataclass
+class User:
+    id: int
+    username: str
+    passphrase_hash: str
+    salt: str
+    created_at: float
+class AuthService:
+    """Session-based authentication service"""
+    
+    def __init__(self, db_path: str):
+        self.db_path = db_path
+        self.sessions: Dict[str, dict] = {}
+        self._init_db()
+    
+    def _init_db(self):
+        """Initialize database"""
+        import sqlite3
+        conn = sqlite3.connect(self.db_path)
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                passphrase_hash TEXT NOT NULL,
+                salt TEXT NOT NULL,
+                created_at REAL DEFAULT (strftime('%s', 'now'))
+            )
+        ''')
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS sessions (
+                token TEXT PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id),
+                created_at REAL DEFAULT (strftime('%s', 'now')),
+                expires_at REAL
+            )
+        ''')
+        conn.commit()
+        conn.close()
+    
+    def _derive_key(self, passphrase: str, salt: str, iterations: int = 100000) -> str:
+        """Derive key from passphrase using PBKDF2"""
+        return hashlib.pbkdf2_hmac(
+            'sha256',
+            passphrase.encode(),
+            salt.encode(),
+            iterations
+        ).hex()
+    
+    def register(self, username: str, passphrase: str) -> dict:
+        """Register a new user"""
+        import sqlite3
+        
+        salt = secrets.token_hex(32)
+        passphrase_hash = self._derive_key(passphrase, salt)
+        
+        conn = sqlite3.connect(self.db_path)
+        try:
+            conn.execute(
+                'INSERT INTO users (username, passphrase_hash, salt) VALUES (?, ?, ?)',
+                (username, passphrase_hash, salt)
+            )
+            conn.commit()
+            return {'success': True, 'user': username}
+        except sqlite3.IntegrityError:
+            return {'success': False, 'error': 'Username already exists'}
+        finally:
+            conn.close()
+    
+    def login(self, username: str, passphrase: str) -> Optional[dict]:
+        """Login and create session"""
+        import sqlite3
+        
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.execute(
+            'SELECT id, username, passphrase_hash, salt FROM users WHERE username = ?',
+            (username,)
+        )
+        row = cursor.fetchone()
+        conn.close()
+        
+        if not row:
+            return {'success': False, 'error': 'Invalid credentials'}
+        
+        user_id, username, stored_hash, salt = row
+        passphrase_hash = self._derive_key(passphrase, salt)
+        
+        if passphrase_hash != stored_hash:
+            return {'success': False, 'error': 'Invalid credentials'}
+        
+        # Create session
+        token = secrets.token_hex(32)
+        expires_at = time.time() + 3600  # 1 hour
+        
+        conn = sqlite3.connect(self.db_path)
+        conn.execute(
+            'INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)',
+            (token, user_id, expires_at)
+        )
+        conn.commit()
+        conn.close()
+        
+        return {
+            'success': True,
+            'token': token,
+            'user': {'id': user_id, 'username': username}
+        }
+    
+    def logout(self, token: str) -> bool:
+        """Logout and destroy session"""
+        import sqlite3
+        conn = sqlite3.connect(self.db_path)
+        conn.execute('DELETE FROM sessions WHERE token = ?', (token,))
+        conn.commit()
+        conn.close()
+        return True
+    
+    def verify(self, token: str) -> Optional[dict]:
+        """Verify session token"""
+        import sqlite3
+        
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.execute('''
+            SELECT s.token, s.user_id, s.expires_at, u.username
+            FROM sessions s
+            JOIN users u ON s.user_id = u.id
+            WHERE s.token = ?
+        ''', (token,))
+        row = cursor.fetchone()
+        conn.close()
+        
+        if not row:
+            return None
+        
+        token, user_id, expires_at, username = row
+        
+        if time.time() > expires_at:
+            self.logout(token)
+            return None
+        
+        return {'id': user_id, 'username': username}
+    
+    def require_auth(self, f):
+        """Decorator to require authentication"""
+        from functools import wraps
+        
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            from flask import request, jsonify, session
+            
+            token = request.headers.get('Authorization', '').replace('Bearer ', '')
+            if not token:
+                token = session.get('token')
+            
+            user = self.verify(token)
+            if not user:
+                return jsonify({'success': False, 'error': 'Authentication required'}), 401
+            
+            request.user = user
+            return f(*args, **kwargs)
+        
+        return decorated
+    
+    def change_password(self, username: str, old_passphrase: str, new_passphrase: str) -> dict:
+        """Change user password"""
+        import sqlite3
+        
+        # Verify old password
+        login_result = self.login(username, old_passphrase)
+        if not login_result.get('success'):
+            return login_result
+        
+        # Generate new salt and hash
+        salt = secrets.token_hex(32)
+        new_hash = self._derive_key(new_passphrase, salt)
+        
+        conn = sqlite3.connect(self.db_path)
+        conn.execute(
+            'UPDATE users SET passphrase_hash = ?, salt = ? WHERE username = ?',
+            (new_hash, salt, username)
+        )
+        conn.commit()
+        conn.close()
+        
+        return {'success': True}
+Thinking: Now let me create the storage service.
+# Wrote kaspa-os/core/storage.py
+"""
+Storage Service - Database management
+"""
+import sqlite3
+import json
+from typing import Any, Optional, List, Dict
+from contextlib import contextmanager
+class StorageService:
+    """SQLite-based storage service"""
+    
+    def __init__(self, db_path: str):
+        self.db_path = db_path
+        self._init_db()
+    
+    @contextmanager
+    def _get_conn(self):
+        """Get database connection"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            yield conn
+        finally:
+            conn.close()
+    
+    def _init_db(self):
+        """Initialize database schema"""
+        with self._get_conn() as conn:
+            # Users table (already created by auth)
+            # But ensure it's there
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE NOT NULL,
+                    passphrase_hash TEXT NOT NULL,
+                    salt TEXT NOT NULL,
+                    created_at REAL DEFAULT (strftime('%s', 'now'))
+                )
+            ''')
+            
+            # Settings table
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT,
+                    updated_at REAL DEFAULT (strftime('%s', 'now'))
+                )
+            ''')
+            
+            # App registry
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS apps (
+                    name TEXT PRIMARY KEY,
+                    enabled INTEGER DEFAULT 1,
+                    config TEXT,
+                    installed_at REAL DEFAULT (strftime('%s', 'now'))
+                )
+            ''')
+            
+            conn.commit()
+    
+    def execute(self, query: str, params: tuple = ()) -> sqlite3.Cursor:
+        """Execute a query"""
+        with self._get_conn() as conn:
+            return conn.execute(query, params)
+    
+    def execute_many(self, query: str, params: List[tuple]) -> None:
+        """Execute multiple queries"""
+        with self._get_conn() as conn:
+            conn.executemany(query, params)
+            conn.commit()
+    
+    def fetch_one(self, query: str, params: tuple = ()) -> Optional[Dict]:
+        """Fetch one row"""
+        with self._get_conn() as conn:
+            cursor = conn.execute(query, params)
+            row = cursor.fetchone()
+            return dict(row) if row else None
+    
+    def fetch_all(self, query: str, params: tuple = ()) -> List[Dict]:
+        """Fetch all rows"""
+        with self._get_conn() as conn:
+            cursor = conn.execute(query, params)
+            return [dict(row) for row in cursor.fetchall()]
+    
+    # Settings
+    def get_setting(self, key: str, default: Any = None) -> Any:
+        """Get a setting"""
+        row = self.fetch_one('SELECT value FROM settings WHERE key = ?', (key,))
+        if row:
+            try:
+                return json.loads(row['value'])
+            except:
+                return row['value']
+        return default
+    
+    def set_setting(self, key: str, value: Any) -> None:
+        """Set a setting"""
+        json_value = json.dumps(value) if not isinstance(value, str) else value
+        with self._get_conn() as conn:
+            conn.execute('''
+                INSERT OR REPLACE INTO settings (key, value, updated_at)
+                VALUES (?, ?, strftime('%s', 'now'))
+            ''', (key, json_value))
+            conn.commit()
+    
+    # App management
+    def register_app(self, name: str, config: dict = None) -> None:
+        """Register an app"""
+        config_json = json.dumps(config) if config else '{}'
+        with self._get_conn() as conn:
+            conn.execute('''
+                INSERT OR REPLACE INTO apps (name, config, enabled)
+                VALUES (?, ?, 1)
+            ''', (name, config_json))
+            conn.commit()
+    
+    def get_apps(self) -> List[Dict]:
+        """Get all registered apps"""
+        return self.fetch_all('SELECT * FROM apps ORDER BY name')
+    
+    def get_enabled_apps(self) -> List[Dict]:
+        """Get enabled apps"""
+        return self.fetch_all('SELECT * FROM apps WHERE enabled = 1 ORDER BY name')
+    
+    def set_app_enabled(self, name: str, enabled: bool) -> None:
+        """Enable/disable an app"""
+        with self._get_conn() as conn:
+            conn.execute('UPDATE apps SET enabled = ? WHERE name = ?', (1 if enabled else 0, name))
+            conn.commit()
+    
+    # Utility
+    def table_exists(self, table_name: str) -> bool:
+        """Check if table exists"""
+        row = self.fetch_one(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+            (table_name,)
+        )
+        return row is not None
+    
+    def create_table(self, name: str, schema: str) -> None:
+        """Create a table"""
+        with self._get_conn() as conn:
+            conn.execute(f'CREATE TABLE IF NOT EXISTS {name} ({schema})')
+            conn.commit()
+Thinking: Now let me create the plugin manager.
+# Wrote kaspa-os/core/plugin.py
+"""
+Plugin System
+"""
+import os
+import json
+import importlib
+from typing import Dict, List, Optional, Callable
+from dataclasses import dataclass, field
+@dataclass
+class Plugin:
+    """Plugin metadata"""
+    name: str
+    version: str
+    description: str
+    author: str = ""
+    apps: List[str] = field(default_factory=list)
+    routes: Dict[str, str] = field(default_factory=dict)
+    config: Dict = field(default_factory=dict)
+    enabled: bool = True
+    path: str = ""
+class PluginManager:
+    """Manages plugins and app modules"""
+    
+    def __init__(self, apps_dir: str, storage):
+        self.apps_dir = apps_dir
+        self.storage = storage
+        self.plugins: Dict[str, Plugin] = {}
+        self.hooks: Dict[str, List[Callable]] = {}
+    
+    def register_hook(self, name: str, callback: Callable) -> None:
+        """Register a hook callback"""
+        if name not in self.hooks:
+            self.hooks[name] = []
+        self.hooks[name].append(callback)
+    
+    def trigger_hook(self, name: str, *args, **kwargs) -> List:
+        """Trigger all callbacks for a hook"""
+        results = []
+        if name in self.hooks:
+            for callback in self.hooks[name]:
+                try:
+                    results.append(callback(*args, **kwargs))
+                except Exception as e:
+                    print(f"Hook error in {name}: {e}")
+        return results
+    
+    def load_builtin_apps(self) -> List[Plugin]:
+        """Load built-in apps from apps directory"""
+        apps = []
+        
+        if not os.path.exists(self.apps_dir):
+            return apps
+        
+        for item in os.listdir(self.apps_dir):
+            app_path = os.path.join(self.apps_dir, item)
+            
+            # Skip non-directories and hidden items
+            if not os.path.isdir(app_path) or item.startswith('_') or item.startswith('.'):
+                continue
+            
+            # Check for app manifest or init
+            init_file = os.path.join(app_path, '__init__.py')
+            manifest_file = os.path.join(app_path, 'app.json')
+            
+            if os.path.exists(init_file) or os.path.exists(manifest_file):
+                plugin = self._load_app(item, app_path, manifest_file)
+                if plugin:
+                    apps.append(plugin)
+                    self.plugins[plugin.name] = plugin
+        
+        return apps
+    
+    def _load_app(self, name: str, path: str, manifest_file: str) -> Optional[Plugin]:
+        """Load a single app"""
+        config = {}
+        
+        # Load manifest if exists
+        if os.path.exists(manifest_file):
+            with open(manifest_file, 'r') as f:
+                config = json.load(f)
+        
+        # Try to import the module
+        try:
+            module_name = f"apps.{name}"
+            if module_name not in globals():
+                import sys
+                sys.path.insert(0, os.path.dirname(self.apps_dir))
+                importlib.import_module(module_name)
+        except Exception as e:
+            print(f"Could not import {name}: {e}")
+        
+        plugin = Plugin(
+            name=config.get('name', name),
+            version=config.get('version', '1.0.0'),
+            description=config.get('description', ''),
+            author=config.get('author', ''),
+            apps=config.get('apps', []),
+            routes=config.get('routes', {}),
+            config=config.get('config', {}),
+            path=path
+        )
+        
+        # Register in storage
+        self.storage.register_app(plugin.name, plugin.config)
+        
+        return plugin
+    
+    def get_app(self, name: str) -> Optional[Plugin]:
+        """Get app by name"""
+        return self.plugins.get(name)
+    
+    def get_all_apps(self) -> List[Plugin]:
+        """Get all registered apps"""
+        return list(self.plugins.values())
+    
+    def get_enabled_apps(self) -> List[Plugin]:
+        """Get enabled apps"""
+        return [p for p in self.plugins.values() if p.enabled]
+    
+    def enable_app(self, name: str) -> None:
+        """Enable an app"""
+        if name in self.plugins:
+            self.plugins[name].enabled = True
+            self.storage.set_app_enabled(name, True)
+    
+    def disable_app(self, name: str) -> None:
+        """Disable an app"""
+        if name in self.plugins:
+            self.plugins[name].enabled = False
+            self.storage.set_app_enabled(name, False)
+    
+    def get_app_routes(self) -> Dict[str, tuple]:
+        """Get all routes from enabled apps"""
+        routes = {}
+        
+        for plugin in self.get_enabled_apps():
+            for path, handler_name in plugin.routes.items():
+                # Routes will be registered by the app module
+                routes[path] = (plugin.name, handler_name)
+        
+        return routes
+    
+    def register_app_routes(self, app, blueprint):
+        """Register an app's Flask blueprint"""
+        # This will be called by each app's __init__.py
+        pass
+Thinking: Let me create the theme service and then the main app.py file. After that I'll update the todo list.
+# Wrote kaspa-os/core/theme.py
+"""
+Theme Service
+"""
+from typing import Dict, List
+class ThemeService:
+    """Theme management service"""
+    
+    DEFAULT_THEME = 'dark'
+    
+    def __init__(self, storage):
+        self.storage = storage
+        self.themes = {
+            'dark': self._dark_theme(),
+            'light': self._light_theme()
+        }
+    
+    def _dark_theme(self) -> Dict:
+        return {
+            'name': 'Dark',
+            'colors': {
+                'bg-primary': '#0f172a',
+                'bg-secondary': '#1e293b',
+                'bg-card': '#334155',
+                'text-primary': '#f1f5f9',
+                'text-secondary': '#94a3b8',
+                'accent': '#00d4ff',
+                'accent-hover': '#00b8e6',
+                'danger': '#ef4444',
+                'success': '#10b981',
+                'warning': '#f59e0b',
+                'border': '#475569'
+            }
+        }
+    
+    def _light_theme(self) -> Dict:
+        return {
+            'name': 'Light',
+            'colors': {
+                'bg-primary': '#f8fafc',
+                'bg-secondary': '#ffffff',
+                'bg-card': '#f1f5f9',
+                'text-primary': '#0f172a',
+                'text-secondary': '#64748b',
+                'accent': '#0891b2',
+                'accent-hover': '#0e7490',
+                'danger': '#dc2626',
+                'success': '#16a34a',
+                'warning': '#d97706',
+                'border': '#e2e8f0'
+            }
+        }
+    
+    def get_theme(self, name: str = None) -> Dict:
+        """Get theme by name"""
+        if not name:
+            name = self.storage.get_setting('theme', self.DEFAULT_THEME)
+        return self.themes.get(name, self.themes[self.DEFAULT_THEME])
+    
+    def get_theme_css(self, name: str = None) -> str:
+        """Generate CSS variables for theme"""
+        theme = self.get_theme(name)
+        css = ':root {\n'
+        for var, value in theme['colors'].items():
+            css += f'    --{var}: {value};\n'
+        css += '}\n'
+        return css
+    
+    def list_themes(self) -> List[str]:
+        """List available themes"""
+        return list(self.themes.keys())
+    
+    def set_theme(self, name: str) -> bool:
+        """Set active theme"""
+        if name in self.themes:
+            self.storage.set_setting('theme', name)
+            return True
+        return False
+Thinking: Now let me create the main app.py file.
+# Wrote kaspa-os/app.py
+"""
+KaspaOS Main Application
+"""
+import os
+from flask import Flask, session, redirect, url_for
+from flask import render_template, jsonify, request
+from config import config, Config
+from core.auth import AuthService
+from core.storage import StorageService
+from core.plugin import PluginManager
+from core.theme import ThemeService
+def create_app(config_name='default'):
+    """Create and configure Flask application"""
+    
+    # Initialize config
+    app_config = config.get(config_name, config['development'])
+    app_config.init()
+    
+    # Create Flask app
+    app = Flask(
+        __name__,
+        template_folder=app_config.TEMPLATES_DIR,
+        static_folder=app_config.STATIC_DIR
+    )
+    
+    # Load config
+    app.config['SECRET_KEY'] = app_config.SECRET_KEY
+    app.config['DEBUG'] = app_config.DEBUG
+    
+    # Initialize services
+    storage = StorageService(app_config.DB_PATH)
+    auth = AuthService(app_config.DB_PATH)
+    theme = ThemeService(storage)
+    plugins = PluginManager(
+        os.path.join(app_config.BASE_DIR, 'apps'),
+        storage
+    )
+    
+    # Store in app context
+    app.storage = storage
+    app.auth = auth
+    app.theme = theme
+    app.plugins = plugins
+    
+    # Load built-in apps
+    plugins.load_builtin_apps()
+    
+    # Register routes
+    _register_routes(app, plugins, auth, theme, app_config)
+    
+    return app
+def _register_routes(app, plugins, auth, theme, app_config):
+    """Register application routes"""
+    
+    @app.route('/')
+    def index():
+        """Main dashboard"""
+        if 'token' not in session:
+            return redirect(url_for('login'))
+        
+        user = auth.verify(session.get('token'))
+        if not user:
+            return redirect(url_for('login'))
+        
+        enabled_apps = plugins.get_enabled_apps()
+        
+        return render_template(
+            'layout.html',
+            user=user,
+            apps=enabled_apps,
+            current_theme=theme.get_theme()
+        )
+    
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        """Login page"""
+        if request.method == 'POST':
+            data = request.get_json() or {}
+            username = data.get('username', '')
+            password = data.get('password', '')
+            
+            # Check if user exists
+            result = auth.login(username, password)
+            
+            if result.get('success'):
+                session['token'] = result['token']
+                session['user'] = result['user']
+                return jsonify({'success': True})
+            
+            return jsonify(result), 401
+        
+        return render_template('login.html')
+    
+    @app.route('/register', methods=['GET', 'POST'])
+    def register():
+        """Registration page"""
+        if request.method == 'POST':
+            data = request.get_json() or {}
+            username = data.get('username', '')
+            password = data.get('password', '')
+            
+            result = auth.register(username, password)
+            
+            if result.get('success'):
+                # Auto-login after register
+                login_result = auth.login(username, password)
+                if login_result.get('success'):
+                    session['token'] = login_result['token']
+                    session['user'] = login_result['user']
+            
+            return jsonify(result)
+        
+        return render_template('register.html')
+    
+    @app.route('/logout')
+    def logout():
+        """Logout"""
+        token = session.pop('token', None)
+        if token:
+            auth.logout(token)
+        session.pop('user', None)
+        return redirect(url_for('login'))
+    
+    @app.route('/api/auth/status')
+    def auth_status():
+        """Check auth status"""
+        token = request.headers.get('Authorization', '').replace('Bearer ', '')
+        if not token:
+            token = session.get('token')
+        
+        user = auth.verify(token) if token else None
+        
+        return jsonify({
+            'authenticated': user is not None,
+            'user': user
+        })
+    
+    @app.route('/api/themes')
+    def themes_list():
+        """List available themes"""
+        return jsonify({
+            'themes': theme.list_themes(),
+            'current': theme.storage.get_setting('theme', 'dark')
+        })
+    
+    @app.route('/api/themes/<name>', methods=['POST'])
+    def set_theme(name):
+        """Set active theme"""
+        if theme.set_theme(name):
+            return jsonify({'success': True})
+        return jsonify({'success': False, 'error': 'Theme not found'}), 404
+    
+    @app.route('/api/apps')
+    def apps_list():
+        """List installed apps"""
+        apps = plugins.get_enabled_apps()
+        return jsonify({
+            'apps': [
+                {
+                    'name': a.name,
+                    'version': a.version,
+                    'description': a.description,
+                    'path': a.path
+                }
+                for a in apps
+            ]
+        })
+    
+    @app.route('/app/<app_name>')
+    def app_page(app_name):
+        """Load app page"""
+        if 'token' not in session:
+            return redirect(url_for('login'))
+        
+        user = auth.verify(session.get('token'))
+        if not user:
+            return redirect(url_for('login'))
+        
+        # Check if app exists
+        app_plugin = plugins.get_app(app_name)
+        if not app_plugin or not app_plugin.enabled:
+            return "App not found", 404
+        
+        # Render app template
+        template_path = os.path.join(app_plugin.path, 'templates', f'{app_name}.html')
+        if os.path.exists(template_path):
+            return render_template(f'{app_name}.html', app=app_plugin)
+        
+        # Or use a generic template
+        enabled_apps = plugins.get_enabled_apps()
+        return render_template(
+            'app.html',
+            app=app_plugin,
+            apps=enabled_apps,
+            current_theme=theme.get_theme()
+        )
+    
+    # Error handlers
+    @app.errorhandler(404)
+    def not_found(e):
+        return jsonify({'error': 'Not found'}), 404
+    
+    @app.errorhandler(500)
+    def server_error(e):
+        return jsonify({'error': 'Server error'}), 500
+# Create default app
+app = create_app()
+if __name__ == '__main__':
+    cfg = config.get('development', config['development'])
+    print(f"Starting KaspaOS on http://localhost:{cfg.PORT}")
+    app.run(host=cfg.HOST, port=cfg.PORT, debug=cfg.DEBUG)
+Thinking: Now I need to create the templates and app modules. Let me update the todo and continue building.
+# Todos
+Create KaspaOS directory structure
+Set up Flask app with plugin system
+Create core services (auth, storage, encryption)
+Build shell/layout template
+Create Pay app module
+Create Vault app module
+Add navigation between apps
+Thinking: Now let me create the templates. I'll create the base layout and login/register templates.
+# Wrote kaspa-os/templates/base.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KaspaOS{% endblock %}</title>
+    
+    <style>
+        {% if current_theme %}
+        :root {
+            {% for var, value in current_theme.colors.items() %}
+            --{{ var }}: {{ value }};
+            {% endfor %}
+        }
+        {% else %}
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #00d4ff;
+            --accent-hover: #00b8e6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border: #475569;
+        }
+        {% endif %}
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        
+        input, select {
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        {% block styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    {% block body %}{% endblock %}
+    
+    <script>
+        {% block scripts %}{% endblock %}
+    </script>
+</body>
+</html>
+Thinking: Now let me create the login template.
+# Wrote kaspa-os/templates/login.html
+{% extends "base.html" %}
+{% block title %}Login - KaspaOS{% endblock %}
+{% block styles %}
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+.login-box {
+    background: var(--bg-secondary);
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.login-box h1 {
+    text-align: center;
+    margin-bottom: 8px;
+    color: var(--accent);
+}
+.login-box .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: none;
+}
+.error.show {
+    display: block;
+}
+.login-box .btn {
+    width: 100%;
+    margin-top: 10px;
+}
+.login-box .links {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+{% endblock %}
+{% block body %}
+<div class="login-container">
+    <div class="login-box">
+        <h1>KaspaOS</h1>
+        <p class="subtitle">Sign in to your account</p>
+        
+        <div class="error" id="error"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+        
+        <div class="links">
+            Don't have an account? <a href="/register">Create one</a>
+        </div>
+    </div>
+</div>
+<script>
+const form = document.getElementById('loginForm');
+const errorEl = document.getElementById('error');
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password})
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            window.location.href = '/';
+        } else {
+            errorEl.textContent = data.error || 'Login failed';
+            errorEl.classList.add('show');
+        }
+    } catch (err) {
+        errorEl.textContent = 'An error occurred';
+        errorEl.classList.add('show');
+    }
+});
+</script>
+{% endblock %}
+Thinking: Now let me create the register template and the main layout template.
+# Wrote kaspa-os/templates/register.html
+{% extends "base.html" %}
+{% block title %}Register - KaspaOS{% endblock %}
+{% block styles %}
+.register-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+.register-box {
+    background: var(--bg-secondary);
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.register-box h1 {
+    text-align: center;
+    margin-bottom: 8px;
+    color: var(--accent);
+}
+.register-box .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+.error, .success {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    display: none;
+}
+.error.show { display: block; }
+.success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid var(--success);
+    color: var(--success);
+    display: none;
+}
+.success.show { display: block; }
+.register-box .btn {
+    width: 100%;
+    margin-top: 10px;
+}
+.register-box .links {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+{% endblock %}
+{% block body %}
+<div class="register-container">
+    <div class="register-box">
+        <h1>KaspaOS</h1>
+        <p class="subtitle">Create your account</p>
+        
+        <div class="error" id="error"></div>
+        <div class="success" id="success"> Redirecting...</divAccount created!>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" name="username" required minlength="3">
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Create Account</button>
+        </form>
+        
+        <div class="links">
+            Already have an account? <a href="/login">Sign in</a>
+        </div>
+    </div>
+</div>
+<script>
+const form = document.getElementById('registerForm');
+const errorEl = document.getElementById('error');
+const successEl = document.getElementById('success');
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password})
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            successEl.classList.add('show');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+        } else {
+            errorEl.textContent = data.error || 'Registration failed';
+            errorEl.classList.add('show');
+            successEl.classList.remove('show');
+        }
+    } catch (err) {
+        errorEl.textContent = 'An error occurred';
+        errorEl.classList.add('show');
+    }
+});
+</script>
+{% endblock %}
+Thinking: Now let me create the main layout template.
+# Wrote kaspa-os/templates/layout.html
+{% extends "base.html" %}
+{% block title %}KaspaOS{% endblock %}
+{% block styles %}
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+}
+.sidebar-header h1 {
+    font-size: 20px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.sidebar-header .logo {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg-primary);
+    font-weight: bold;
+}
+/* Navigation */
+.nav-section {
+    padding: 15px;
+    flex: 1;
+    overflow-y: auto;
+}
+.nav-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    margin-bottom: 4px;
+    cursor: pointer;
+}
+.nav-item:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+.nav-item.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+}
+.nav-item .icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.top-bar {
+    height: 60px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+.top-bar .title {
+    font-size: 18px;
+    font-weight: 600;
+}
+.top-bar .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.top-bar .user-info {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+.content-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+/* App Grid */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+.app-card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+.app-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.app-card .icon {
+    width: 48px;
+    height: 48px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+.app-card h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+.app-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+.quick-action {
+    padding: 8px 16px;
+    background: var(--bg-card);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.quick-action:hover {
+    background: var(--accent);
+    color: var(--bg-primary);
+}
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+    
+    .sidebar-header h1 span,
+    .nav-item span,
+    .nav-label {
+        display: none;
+    }
+    
+    .nav-item {
+        justify-content: center;
+        padding: 15px;
+    }
+}
+{% endblock %}
+{% block body %}
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>
+                <div class="logo">K</div>
+                <span>KaspaOS</span>
+            </h1>
+        </div>
+        
+        <nav class="nav-section">
+            <div class="nav-label">Apps</div>
+            
+            {% for app in apps %}
+            <a href="/app/{{ app.name }}" class="nav-item {% if request.path == '/app/' + app.name %}active{% endif %}">
+                <div class="icon">{{ loop.index }}</div>
+                <span>{{ app.name|title }}</span>
+            </a>
+            {% endfor %}
+            
+            <div class="nav-label" style="margin-top: 20px;">System</div>
+            
+            <a href="/settings" class="nav-item">
+                <div class="icon">⚙</div>
+                <span>Settings</span>
+            </a>
+            
+            <a href="/logout" class="nav-item">
+                <div class="icon">↪</div>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="title">Dashboard</div>
+            <div class="user-menu">
+                <span class="user-info">{{ user.username }}</span>
+                <a href="/logout" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Logout</a>
+            </div>
+        </header>
+        
+        <div class="content-area">
+            <h2 style="margin-bottom: 20px;">Welcome to KaspaOS</h2>
+            
+            <div class="app-grid">
+                {% for app in apps %}
+                <a href="/app/{{ app.name }}" class="app-card">
+                    <div class="icon">{{ loop.index }}</div>
+                    <h3>{{ app.name|title }}</h3>
+                    <p>{{ app.description or 'No description' }}</p>
+                </a>
+                {% endfor %}
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px;">Quick Actions</h3>
+                <div class="quick-actions">
+                    <a href="/app/pay" class="quick-action">Send KAS</a>
+                    <a href="/app/vault" class="quick-action">View Vault</a>
+                    <a href="/app/pay" class="quick-action">Node Status</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+Thinking: Now I need to create the Pay and Vault app modules. Let me also create the app.json files for them.
+# Wrote kaspa-os/apps/pay/app.json
+{
+    "name": "pay",
+    "version": "1.0.0",
+    "description": "Kaspa cryptocurrency payments, wallet management, and smart contracts",
+    "author": "KaspaOS",
+    "apps": ["pay"],
+    "routes": {
+        "/api/pay": "routes"
+    }
+}
+Thinking: Let me create the pay app module and vault app.
+# Wrote kaspa-os/apps/pay/__init__.py
+"""
+Pay App - Kaspa cryptocurrency management
+"""
+from flask import Blueprint, jsonify, request
+# Create blueprint
+pay_bp = Blueprint('pay', __name__)
+# Routes
+@pay_bp.route('/api/pay/status')
+def status():
+    """Get node status"""
+    # Will integrate with existing dashboard
+    return jsonify({
+        'name': 'pay',
+        'version': '1.0.0',
+        'description': 'Kaspa payment system'
+    })
+@pay_bp.route('/api/pay/node')
+def node_info():
+    """Get node information"""
+    return jsonify({
+        'connected': True,
+        'network': 'testnet-12'
+    })
+@pay_bp.route('/api/pay/wallet')
+def wallet():
+    """Get wallet info"""
+    return jsonify({
+        'wallets': []
+    })
+def register_routes(app):
+    """Register pay routes with Flask app"""
+    app.register_blueprint(pay_bp, url_prefix='/pay')
+Thinking: Now let me create the vault app.
+# Wrote kaspa-os/apps/vault/__init__.py
+"""
+Vault App - Encrypted storage for keys and secrets
+"""
+from flask import Blueprint, jsonify, request
+import secrets
+# Create blueprint
+vault_bp = Blueprint('vault', __name__)
+# In-memory vault (will use encrypted file storage in production)
+vault_data = {
+    'secrets': [],
+    'keys': [],
+    'deadman_contracts': []
+}
+@vault_bp.route('/api/vault/status')
+def status():
+    """Get vault status"""
+    return jsonify({
+        'name': 'vault',
+        'version': '1.0.0',
+        'description': 'Encrypted key and secret storage',
+        'secrets_count': len(vault_data['secrets']),
+        'keys_count': len(vault_data['keys']),
+        'contracts_count': len(vault_data['deadman_contracts'])
+    })
+@vault_bp.route('/api/vault/secrets', methods=['GET', 'POST'])
+def secrets_list():
+    """List or add secrets"""
+    if request.method == 'POST':
+        data = request.get_json()
+        secret = {
+            'id': secrets.token_hex(8),
+            'name': data.get('name', ''),
+            'created': secrets.token_hex(4)
+        }
+        vault_data['secrets'].append(secret)
+        return jsonify({'success': True, 'secret': secret})
+    
+    return jsonify({'secrets': vault_data['secrets']})
+@vault_bp.route('/api/vault/keys', methods=['GET', 'POST'])
+def keys_list():
+    """List or add keys"""
+    if request.method == 'POST':
+        data = request.get_json()
+        key = {
+            'id': secrets.token_hex(8),
+            'name': data.get('name', ''),
+            'pubkey': data.get('pubkey', ''),
+            'created': secrets.token_hex(4)
+        }
+        vault_data['keys'].append(key)
+        return jsonify({'success': True, 'key': key})
+    
+    return jsonify({'keys': vault_data['keys']})
+@vault_bp.route('/api/vault/deadman', methods=['GET', 'POST'])
+def deadman_list():
+    """List or add deadman contracts"""
+    if request.method == 'POST':
+        data = request.get_json()
+        contract = {
+            'id': secrets.token_hex(8),
+            'address': data.get('address', ''),
+            'owner_pubkey': data.get('owner_pubkey', ''),
+            'beneficiary_pubkey': data.get('beneficiary_pubkey', ''),
+            'timeout': data.get('timeout', 31536000),
+            'status': 'active',
+            'created': secrets.token_hex(4)
+        }
+        vault_data['deadman_contracts'].append(contract)
+        return jsonify({'success': True, 'contract': contract})
+    
+    return jsonify({'contracts': vault_data['deadman_contracts']})
+@vault_bp.route('/api/vault/deadman/<contract_id>', methods=['DELETE'])
+def deadman_delete(contract_id):
+    """Remove a deadman contract"""
+    vault_data['deadman_contracts'] = [
+        c for c in vault_data['deadman_contracts'] 
+        if c['id'] != contract_id
+    ]
+    return jsonify({'success': True})
+def register_routes(app):
+    """Register vault routes with Flask app"""
+    app.register_blueprint(vault_bp, url_prefix='/vault')
